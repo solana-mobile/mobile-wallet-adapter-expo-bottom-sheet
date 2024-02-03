@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "basic-bottom-sheet-wallet",
+    "slug": "basic-bottom-sheet-wallet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "mwa-bottom-sheet-expo-plugin",
+        {
+          "walletUriBase": "MyExtension"
+        }
+      ]
+    ]
+  }
+}

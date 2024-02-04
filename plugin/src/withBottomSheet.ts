@@ -5,13 +5,12 @@ import { withBottomSheetAndroidManifest } from "./withBottomSheetAndroidManifest
 import { withBottomSheetStyles } from "./withBottomSheetStyles";
 
 type PluginParams = {
-  folderName: string;
-  dependencies?: Record<string, string>[];
+  walletUriBase: string;
 };
 
 const withBottomSheet: ConfigPlugin<PluginParams> = (
   config,
-  { folderName, dependencies }
+  { walletUriBase }
 ) => {
   // Steps:
   //  1. Write AndroidActivity into Android project
@@ -21,7 +20,7 @@ const withBottomSheet: ConfigPlugin<PluginParams> = (
   return withPlugins(config, [
     withBottomSheetActivity,
     withBottomSheetStyles,
-    withBottomSheetAndroidManifest,
+    [withBottomSheetAndroidManifest, { walletUriBase }],
   ]);
 };
 

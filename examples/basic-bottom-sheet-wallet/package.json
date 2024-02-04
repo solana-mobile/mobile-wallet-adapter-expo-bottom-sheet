@@ -13,7 +13,7 @@
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.2",
-    "mwa-bottom-sheet-expo-plugin": "file:/Users/mikesulistio/Documents/testing/expo-wallet/mwa-bottom-sheet-expo-plugin",
+    "mwa-bottom-sheet-expo-plugin": "file:/Users/mikesulistio/Documents/sms/mobile-wallet-adapter-expo-bottom-sheet",
     "expo-dev-client": "~3.3.8"
   },
   "devDependencies": {

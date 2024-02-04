@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.michaelsulistio.basicbottomsheetwallet"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +31,7 @@
       [
         "mwa-bottom-sheet-expo-plugin",
         {
-          "walletUriBase": "MyExtension"
+          "walletUriBase": "my-test-scheme"
         }
       ]
     ]

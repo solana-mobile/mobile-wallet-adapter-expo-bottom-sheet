@@ -1,7 +1,7 @@
 {
   "name": "basic-bottom-sheet-wallet",
   "version": "1.0.0",
-  "main": "./AppEntry.js",
+  "main": "./CustomAppEntry.js",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",

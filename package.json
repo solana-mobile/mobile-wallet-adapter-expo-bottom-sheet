@@ -1,6 +1,6 @@
 {
-  "name": "mobile-wallet-adapter-expo-bottom-sheet",
-  "version": "0.0.1",
+  "name": "@solana-mobile/mobile-wallet-adapter-expo-bottom-sheet",
+  "version": "0.1.0",
   "description": "Config plugin to add a Mobile Wallet Adapter bottom sheet Activity to an Expo app",
   "main": "build/index.js",
   "types": "build/index.d.ts",

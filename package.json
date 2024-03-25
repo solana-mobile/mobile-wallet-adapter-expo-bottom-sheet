@@ -1,6 +1,6 @@
 {
   "name": "@solana-mobile/mobile-wallet-adapter-expo-bottom-sheet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Config plugin to add a Mobile Wallet Adapter bottom sheet Activity to an Expo app",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrew-levy/react-native-safari-extension.git"
+    "url": "git+https://github.com/solana-mobile/mobile-wallet-adapter-expo-bottom-sheet.git"
   },
   "author": {
     "name": "Michael Sulistio",
@@ -29,9 +29,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/andrew-levy/react-native-safari-extension/issues"
+    "url": "https://github.com/solana-mobile/mobile-wallet-adapter-expo-bottom-sheet/issues"
   },
-  "homepage": "https://github.com/andrew-levy/react-native-safari-extension#readme",
+  "homepage": "https://github.com/solana-mobile/mobile-wallet-adapter-expo-bottom-sheet#readme",
   "keywords": [
     "react-native",
     "expo",

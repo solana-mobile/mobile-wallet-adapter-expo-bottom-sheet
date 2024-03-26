@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export const PATH_TO_INJECTED_FILES =
-  "node_modules/mwa-bottom-sheet-expo-plugin/inject/";
+  "node_modules/@solana-mobile/mobile-wallet-adapter-expo-bottom-sheet/inject/";
 
 export const BOTTOM_SHEET_ACTIVITY_FILE_NAME =
   "MobileWalletAdapterBottomSheetActivity.kt";

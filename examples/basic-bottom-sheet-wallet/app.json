@@ -28,7 +28,7 @@
     },
     "plugins": [
       [
-        "mwa-bottom-sheet-expo-plugin",
+        "@solana-mobile/mobile-wallet-adapter-expo-bottom-sheet",
         {
           "walletUriBase": "my-test-scheme"
         }

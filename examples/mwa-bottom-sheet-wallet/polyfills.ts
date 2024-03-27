@@ -1,9 +1,8 @@
 import { getRandomValues as expoCryptoGetRandomValues } from "expo-crypto";
 import { Buffer } from "buffer";
 import "react-native-get-random-values";
-import { TextEncoder, TextDecoder } from "text-encoding";
+import { TextEncoder } from "text-encoding";
 
-global.TextDecoder = TextDecoder;
 global.TextEncoder = TextEncoder;
 global.Buffer = Buffer;
 

@@ -1,20 +1,19 @@
-import {Keypair} from '@solana/web3.js';
-import React, { useEffect, useState } from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Button, Text} from 'react-native-paper';
-
+import { Keypair } from "@solana/web3.js";
 import {
   MWARequestFailReason,
   MWARequestType,
   resolve,
   SignMessagesRequest,
   SignTransactionsRequest,
-} from '@solana-mobile/mobile-wallet-adapter-walletlib';
+} from "@solana-mobile/mobile-wallet-adapter-walletlib";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import {SolanaSigningUseCase} from '../utils/SolanaSigningUseCase';
-import {useWallet} from '../components/WalletProvider';
-import MWABottomsheetHeader from '../components/MWABottomsheetHeader';
-import { useClientTrust } from '../components/ClientTrustProvider';
+import { useClientTrust } from "../components/ClientTrustProvider";
+import MWABottomsheetHeader from "../components/MWABottomsheetHeader";
+import { useWallet } from "../components/WalletProvider";
+import { SolanaSigningUseCase } from "../utils/SolanaSigningUseCase";
 
 type SignPayloadsRequest = SignTransactionsRequest | SignMessagesRequest;
 
@@ -24,59 +23,60 @@ const signPayloads = async (wallet: Keypair, request: SignPayloadsRequest) => {
   } else if (request.__type === MWARequestType.SignMessagesRequest) {
     signMessages(wallet, request);
   } else {
-    console.warn('Invalid payload screen request type');
-    return;
+    console.warn("Invalid payload screen request type");
   }
 };
 
 const signTransactions = async (
   wallet: Keypair,
-  request: SignTransactionsRequest,
+  request: SignTransactionsRequest
 ) => {
-  const valid: boolean[] = request.payloads.map(_ => {
+  const valid: boolean[] = request.payloads.map((_) => {
     return true;
   });
 
-  let signedPayloads: Uint8Array[] = request.payloads.map((numArray, index) => {
-    try {
-      return SolanaSigningUseCase.signTransaction(
-        new Uint8Array(numArray),
-        wallet,
-      );
-    } catch (e) {
-      console.warn(`Transaction ${index} is not a valid Solana transaction`);
-      valid[index] = false;
-      return new Uint8Array();
+  const signedPayloads: Uint8Array[] = request.payloads.map(
+    (numArray, index) => {
+      try {
+        return SolanaSigningUseCase.signTransaction(
+          new Uint8Array(numArray),
+          wallet
+        );
+      } catch (e) {
+        console.warn(`Transaction ${index} is not a valid Solana transaction`);
+        valid[index] = false;
+        return new Uint8Array();
+      }
     }
-  });
+  );
 
   // If all valid, then call complete request
   if (!valid.includes(false)) {
-    resolve(request, {signedPayloads});
+    resolve(request, { signedPayloads });
   } else {
     resolve(request, {
       failReason: MWARequestFailReason.InvalidSignatures,
-      valid: valid,
+      valid,
     });
   }
 };
 
 const signMessages = async (wallet: Keypair, request: SignMessagesRequest) => {
-  const valid: boolean[] = request.payloads.map(_ => {
+  const valid: boolean[] = request.payloads.map((_) => {
     return true;
   });
 
-  const signedPayloads = request.payloads.map(numArray => {
+  const signedPayloads = request.payloads.map((numArray) => {
     return SolanaSigningUseCase.signMessage(new Uint8Array(numArray), wallet);
   });
 
   // If all valid, then call complete request
   if (!valid.includes(false)) {
-    resolve(request, {signedPayloads});
+    resolve(request, { signedPayloads });
   } else {
     resolve(request, {
       failReason: MWARequestFailReason.InvalidSignatures,
-      valid: valid,
+      valid,
     });
   }
 };
@@ -87,52 +87,56 @@ interface SignPayloadsScreenProps {
 
 // this view is basically the same as AuthenticationScreen.
 // Should either combine them or pull common code to base abstraction
-export default function SignPayloadsScreen({request}: SignPayloadsScreenProps) {
-  const {wallet} = useWallet();
-  const {clientTrustUseCase} = useClientTrust();
+export default function SignPayloadsScreen({
+  request,
+}: SignPayloadsScreenProps) {
+  const { wallet } = useWallet();
+  const { clientTrustUseCase } = useClientTrust();
   const [verified, setVerified] = useState(false);
   const isSignTransactions =
     request.__type === MWARequestType.SignTransactionsRequest;
 
   // We should always have an available keypair here.
   if (!wallet) {
-    throw new Error('Wallet is null or undefined');
+    throw new Error("Wallet is null or undefined");
   }
 
   useEffect(() => {
-
     const verifyClient = async () => {
-      const authScope = new TextDecoder().decode(request.authorizationScope);
-      const verified = await clientTrustUseCase?.verifyPrivaledgedMethodSource(
-        authScope, 
-        request.appIdentity?.identityUri
-      ) ?? false;
+      const authScope = Buffer.from(request.authorizationScope).toString(
+        "utf8"
+      );
+      const verified =
+        (await clientTrustUseCase?.verifyPrivaledgedMethodSource(
+          authScope,
+          request.appIdentity?.identityUri
+        )) ?? false;
       setVerified(verified);
 
       // Note: this will silently decline the request. Not great UX
-      // The wallet should inform the user that the source of this request was not verified  
+      // The wallet should inform the user that the source of this request was not verified
       if (!verified) {
         if (request.__type == MWARequestType.SignTransactionsRequest) {
-          resolve(request, {failReason: MWARequestFailReason.UserDeclined});
+          resolve(request, { failReason: MWARequestFailReason.UserDeclined });
         } else if (request.__type == MWARequestType.SignMessagesRequest) {
-          resolve(request, {failReason: MWARequestFailReason.UserDeclined});
+          resolve(request, { failReason: MWARequestFailReason.UserDeclined });
         }
       }
-    }
+    };
 
     verifyClient();
-    
   }, []);
 
   return (
     <View>
       <MWABottomsheetHeader
-        title={'Sign ' + (isSignTransactions ? 'transactions' : 'messages')}
+        title={"Sign " + (isSignTransactions ? "transactions" : "messages")}
         cluster={request.chain}
-        appIdentity={request.appIdentity}>
+        appIdentity={request.appIdentity}
+      >
         <Text style={styles.content}>
-          This request has {request.payloads.length}{' '}
-          {request.payloads.length > 1 ? 'payloads' : 'payload'} to sign.
+          This request has {request.payloads.length}{" "}
+          {request.payloads.length > 1 ? "payloads" : "payload"} to sign.
         </Text>
       </MWABottomsheetHeader>
 
@@ -143,19 +147,25 @@ export default function SignPayloadsScreen({request}: SignPayloadsScreenProps) {
           onPress={() => {
             signPayloads(wallet, request);
           }}
-          mode="contained">
+          mode="contained"
+        >
           Sign
         </Button>
-        <Button 
-          style={styles.actionButton} 
+        <Button
+          style={styles.actionButton}
           onPress={() => {
             if (request.__type == MWARequestType.SignTransactionsRequest) {
-              resolve(request, {failReason: MWARequestFailReason.UserDeclined});
+              resolve(request, {
+                failReason: MWARequestFailReason.UserDeclined,
+              });
             } else if (request.__type == MWARequestType.SignMessagesRequest) {
-              resolve(request, {failReason: MWARequestFailReason.UserDeclined});
+              resolve(request, {
+                failReason: MWARequestFailReason.UserDeclined,
+              });
             }
           }}
-          mode="outlined">
+          mode="outlined"
+        >
           Reject
         </Button>
       </View>
@@ -165,17 +175,17 @@ export default function SignPayloadsScreen({request}: SignPayloadsScreenProps) {
 
 const styles = StyleSheet.create({
   buttonGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
   },
   actionButton: {
     flex: 1,
     marginEnd: 8,
   },
   content: {
-    textAlign: 'left',
-    color: 'green',
+    textAlign: "left",
+    color: "green",
     fontSize: 18,
   },
 });

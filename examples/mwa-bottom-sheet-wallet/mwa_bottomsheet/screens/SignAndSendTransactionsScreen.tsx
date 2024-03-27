@@ -1,21 +1,21 @@
 import { Keypair } from "@solana/web3.js";
-import React, { useEffect, useState } from "react";
-import { NativeModules, StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-paper";
 import {
   MWARequestFailReason,
   resolve,
   SignAndSendTransactionsRequest,
 } from "@solana-mobile/mobile-wallet-adapter-walletlib";
+import React, { useEffect, useState } from "react";
+import { NativeModules, StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { SolanaSigningUseCase } from "../utils/SolanaSigningUseCase";
+import { useClientTrust } from "../components/ClientTrustProvider";
+import MWABottomsheetHeader from "../components/MWABottomsheetHeader";
+import { useWallet } from "../components/WalletProvider";
 import {
   SendTransactionsUseCase,
   SendTransactionsError,
 } from "../utils/SendTransactionsUseCase";
-import { useWallet } from "../components/WalletProvider";
-import MWABottomsheetHeader from "../components/MWABottomsheetHeader";
-import { useClientTrust } from "../components/ClientTrustProvider";
+import { SolanaSigningUseCase } from "../utils/SolanaSigningUseCase";
 
 const signAndSendTransactions = async (
   wallet: Keypair,
@@ -24,7 +24,7 @@ const signAndSendTransactions = async (
   const valid: boolean[] = request.payloads.map((_) => {
     return true;
   });
-  let signedTransactions = request.payloads.map((numArray, index) => {
+  const signedTransactions = request.payloads.map((numArray, index) => {
     try {
       return SolanaSigningUseCase.signTransaction(
         new Uint8Array(numArray),
@@ -42,7 +42,7 @@ const signAndSendTransactions = async (
   if (valid.includes(false)) {
     resolve(request, {
       failReason: MWARequestFailReason.InvalidSignatures,
-      valid: valid,
+      valid,
     });
     return;
   }
@@ -85,7 +85,9 @@ export default function SignAndSendTransactionsScreen({
 
   useEffect(() => {
     const verifyClient = async () => {
-      const authScope = new TextDecoder().decode(request.authorizationScope);
+      const authScope = Buffer.from(request.authorizationScope).toString(
+        "utf8"
+      );
       const verified =
         (await clientTrustUseCase?.verifyPrivaledgedMethodSource(
           authScope,
@@ -104,7 +106,7 @@ export default function SignAndSendTransactionsScreen({
   return (
     <View>
       <MWABottomsheetHeader
-        title={"Sign and Send Transactions"}
+        title="Sign and Send Transactions"
         cluster={request.chain}
         appIdentity={request.appIdentity}
       >

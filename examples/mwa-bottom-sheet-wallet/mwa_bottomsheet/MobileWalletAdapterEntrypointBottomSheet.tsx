@@ -24,6 +24,7 @@ import {
   Linking,
 } from "react-native";
 import Modal from "react-native-modal";
+import { TextDecoder } from "fast-text-encoding";
 
 import ClientTrustProvider from "./components/ClientTrustProvider";
 import WalletProvider, { useWallet } from "./components/WalletProvider";
@@ -135,9 +136,13 @@ export default function MobileWalletAdapterEntrypointBottomSheet() {
     // important thing here is that we verify the source and complete the request without bugging the user
     if (curRequest.__type === MWARequestType.ReauthorizeDappRequest) {
       const request = curRequest;
-
-      const authScope = new TextDecoder().decode(request.authorizationScope);
-      console.log("AUTH SCOPE " + authScope);
+      console.log(request.authorizationScope); // [97, 112, 112]
+      console.log(console.log(new TextEncoder().encode("app"))); // [97, 112, 112]
+      const authScope = Buffer.from(request.authorizationScope).toString(
+        "utf8"
+      );
+      console.log("AUTH SCOPE ");
+      console.log(authScope);
 
       // try to verify the reauthorization source, with 3 second timeout
       Promise.race([

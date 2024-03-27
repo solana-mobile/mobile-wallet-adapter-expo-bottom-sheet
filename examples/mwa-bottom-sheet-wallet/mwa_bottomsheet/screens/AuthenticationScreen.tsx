@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
 import {
   AuthorizeDappCompleteResponse,
   AuthorizeDappRequest,
   MWARequestFailReason,
   resolve,
 } from "@solana-mobile/mobile-wallet-adapter-walletlib";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
 
-import { useWallet } from "../components/WalletProvider";
+import { useClientTrust } from "../components/ClientTrustProvider";
 import MWABottomsheetHeader from "../components/MWABottomsheetHeader";
+import { useWallet } from "../components/WalletProvider";
 import {
   VerificationInProgress,
   VerificationState,
 } from "../utils/ClientTrustUseCase";
-import { useClientTrust } from "../components/ClientTrustProvider";
-import { Base64 } from "js-base64";
 
 interface AuthenticationScreenProps {
   request: AuthorizeDappRequest;
@@ -50,7 +49,7 @@ export default function AuthenticationScreen({
   return (
     <View>
       <MWABottomsheetHeader
-        title={"Authorize Dapp"}
+        title="Authorize Dapp"
         cluster={request.chain}
         appIdentity={request.appIdentity}
         verificationState={verificationState ?? new VerificationInProgress("")}
@@ -59,6 +58,8 @@ export default function AuthenticationScreen({
         <Button
           style={styles.actionButton}
           onPress={() => {
+            console.log("in first auth");
+            console.log(verificationState?.authorizationScope);
             resolve(request, {
               accounts: [
                 {

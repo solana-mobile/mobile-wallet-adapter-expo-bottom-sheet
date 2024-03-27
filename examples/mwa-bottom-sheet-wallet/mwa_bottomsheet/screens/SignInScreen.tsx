@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Divider, Text } from "react-native-paper";
+import {
+  SolanaSignInInputWithRequiredFields,
+  createSignInMessageText,
+} from "@solana/wallet-standard-util";
 import {
   AuthorizeDappCompleteResponse,
   AuthorizeDappRequest,
   MWARequestFailReason,
   resolve,
 } from "@solana-mobile/mobile-wallet-adapter-walletlib";
+import { Base64 } from "js-base64";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Divider, Text } from "react-native-paper";
 
-import { useWallet } from "../components/WalletProvider";
+import { useClientTrust } from "../components/ClientTrustProvider";
 import MWABottomsheetHeader from "../components/MWABottomsheetHeader";
+import { useWallet } from "../components/WalletProvider";
 import {
   VerificationInProgress,
   VerificationState,
 } from "../utils/ClientTrustUseCase";
-import { useClientTrust } from "../components/ClientTrustProvider";
-import {
-  SolanaSignInInputWithRequiredFields,
-  createSignInMessage,
-  createSignInMessageText,
-} from "@solana/wallet-standard-util";
 import { SolanaSigningUseCase } from "../utils/SolanaSigningUseCase";
-import { Base64, encode } from "js-base64";
-import { sign } from "@solana/web3.js/src/utils/ed25519";
 
 interface SignInScreenProps {
   request: AuthorizeDappRequest;
@@ -60,7 +58,7 @@ export default function SignInScreen({ request }: SignInScreenProps) {
   return (
     <View>
       <MWABottomsheetHeader
-        title={"Sign In"}
+        title="Sign In"
         cluster={request.chain}
         appIdentity={request.appIdentity}
         verificationState={verificationState ?? new VerificationInProgress("")}
